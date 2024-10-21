@@ -1,0 +1,11 @@
+route_id,route_short_name,route_desc,route_color
+22-2-22,22,Bismarckplatz - Eppelheim,FDC300
+22-1-22,22,Bismarckplatz - Eppelheim,FDC300
+22-121-22,22,Bismarckplatz - Eppelheim,FDC300
+22-102-22,22,Bismarckplatz - Eppelheim,FDC300
+22-122-22,22,Bismarckplatz - Eppelheim,FDC300
+22-852-22,22,Bismarckplatz - Eppelheim,FDC300
+22-851-22,22,Bismarckplatz - Eppelheim,FDC300
+22-853-22,22,Bismarckplatz - Eppelheim,FDC300
+22-854-22,22,Bismarckplatz - Eppelheim,FDC300
+22-856-22,22,Bismarckplatz - Eppelheim,FDC300
