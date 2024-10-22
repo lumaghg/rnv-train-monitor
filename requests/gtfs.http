@@ -1,0 +1,32 @@
+@clientID=079d8926-3684-44be-a159-0a0474dbb246
+@tenantID=87cd3c4f-1e0a-4350-889e-3969cd4616c9
+@clientSecret=YsE8Q~ToetAjRvlvht3WdPDDm5UHBR5~UZ5Hdc1L
+@resource=4eecc3a9-dda4-42da-abfd-fafe74817815
+@hostname=https://gtfs-rt-sandbox-dds.rnv-online.de
+
+
+###
+# @name getAccessTokenForClient
+POST https://login.microsoftonline.com/{{tenantID}}/oauth2/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=client_credentials
+&client_id={{clientID}}
+&client_secret={{clientSecret}}
+&resource={{resource}}
+
+### aktueller tripupdates feed, protobuf format
+GET {{hostname}}/tripupdates
+Authorization: Bearer {{getAccessTokenForClient.response.body.$.access_token}}
+
+### aktueller alerts feed, protobuf format
+GET {{hostname}}/alerts
+Authorization: Bearer {{getAccessTokenForClient.response.body.$.access_token}}
+
+### aktueller tripupdates feed, json format
+GET {{hostname}}/tripupdates/decoded
+Authorization: Bearer {{getAccessTokenForClient.response.body.$.access_token}}
+
+### aktueller alerts feed, json format
+GET {{hostname}}/alerts/decoded
+Authorization: Bearer {{getAccessTokenForClient.response.body.$.access_token}}
