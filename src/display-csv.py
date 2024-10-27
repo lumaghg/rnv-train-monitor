@@ -15,8 +15,6 @@ class DisplayCSV(MatrixBase):
 
             led_matrix = pd.read_csv('led-matrix.csv', header=None, dtype=str, index_col=None)
 
-            print(led_matrix)
-
             # iterate over every cell
             no_rows, no_columns = led_matrix.shape
 
