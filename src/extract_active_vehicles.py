@@ -454,7 +454,7 @@ def getStopName(stops, stop_id):
         return 'ERROR'
     else:
         applicable_stop = applicable_stops.iloc[0]
-        return f'{applicable_stop['stop_name']} (Steig {applicable_stop['platform_code']})'
+        return f"{applicable_stop['stop_name']} (Steig {applicable_stop['platform_code']})"
     
 
 status_df = pd.DataFrame()
