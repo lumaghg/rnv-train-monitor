@@ -160,7 +160,7 @@ print(len(trip_updates))
 # To prepare enriching the stop_times with the delays, we simply fill the missing stopTimeUpdates.
 # We will later use stopSequence to identify a stop, because we can simply calculate the stopSequence for the artificially filled stopTimeUpdated, but can't do it as easily with the stopIds.
 
-# In[14]:
+# In[11]:
 
 
 # iterate over the trip_updates
@@ -232,7 +232,7 @@ except IndexError:
 # Now, we can add the real time delay to the scheduled stop_times.
 # We create two new columns, arrival_realtime and departure_realtime, and calculate the realtime arrival and departure times using the trip_updates from the previous step. If no trip_update exists, we will simply copy the scheduled times.
 
-# In[16]:
+# In[13]:
 
 
 def calculateRealtime(stop_time, arrival_or_departure):
@@ -289,7 +289,7 @@ print(stop_times[:5])
 # ## 5. add realtime start and end times to trips
 # To make it easy to identify the active trips, we will now add start and end times to each trip. First, we will create a function to get all the stop_times for a specific `trip_id`. Then we will sort the stop_times and return the first `arrival_time` as trip start and the last `departure_time` as trip end.
 
-# In[18]:
+# In[15]:
 
 
 def getTripStartRealtime(trip_id:str) -> tuple[str, str]:
@@ -321,7 +321,7 @@ print('Trip Start Realtime: ', example_start, '\nTrip End Realtime: ', example_e
 
 # Now let's add the new columns by using the function we just created.
 
-# In[20]:
+# In[17]:
 
 
 trips['start_realtime'] = trips.apply(lambda row: getTripStartRealtime(row['trip_id']), axis=1)
@@ -335,7 +335,7 @@ print(trips.head(5))
 # First, we need to get all the trip_ids for currently active trips. Trips are active, if the current time is between the start and end time of the trip and if one of the services, the trip belongs to, runs on the current day.
 # Let's start by looking at the start and end times of the trips.
 
-# In[22]:
+# In[20]:
 
 
 print(datetime.datetime.now())
@@ -357,7 +357,7 @@ print(trips.head(5))
 # Secondly, we will check whether the services run on the current day by looking up the services from the `service_id` column in the calendar dataframe.
 # As soon as we find a `service_id` that runs on the current day, we can stop the search and return true, otherwise we return false.
 
-# In[24]:
+# In[22]:
 
 
 def isTripRowActiveOnCurrentDay(trip_row):
@@ -401,8 +401,11 @@ print(trips.head(5))
 # 
 # Each tuple of each direction will have LEDs assigned. The LED's name is composed of the respective stop_ids. e.g. Bismarckplatz (A) (stopId 114601) -> Seegarten(A) (stopId 116821) gets LEDs 114601_116821_T and 114601_116821_S (transit and stopped) assigned. The LED Codes are mapped to their respective hardware addresses. To allow a map creation with only one led for both directions, and also account sections with only one track, the LED-code to LED-hardware address mapping is a many to many mapping.
 # 
+# 
 
-# In[39]:
+# First, let's define some functions:
+
+# In[25]:
 
 
 import pandas as pd
@@ -441,12 +444,14 @@ def getPreviousStopId(stop_times, current_stop_time):
 
     previous_stop_sequence = current_stop_sequence - 1
 
-    previous_stop_times = stop_times.loc[(stop_times['trip_id'] == trip_id) & (stop_times['stop_sequence'] == previous_stop_sequence)]
-    previous_stop_time = previous_stop_times.loc[previous_stop_times.index[0]]
+    previous_stop_times = stop_times.loc[(stop_times['trip_id'] == trip_id) & (stop_times['stop_sequence'] == previous_stop_sequence)].reset_index(drop=True)
+    previous_stop_time = previous_stop_times.iloc[0]
 
     return previous_stop_time['stop_id']
 
 def getStopName(stops, stop_id):
+    if stop_id == 'DEPOT':
+        return 'DEPOT'
    # should be 1 or 0
     applicable_stops = stops.loc[stops['stop_id'] == stop_id]
     if len(applicable_stops) == 0:
@@ -455,7 +460,6 @@ def getStopName(stops, stop_id):
     else:
         applicable_stop = applicable_stops.iloc[0]
         return f"{applicable_stop['stop_name']} (Steig {applicable_stop['platform_code']})"
-    
 
 status_df = pd.DataFrame()
 
@@ -558,18 +562,50 @@ print(status_df)
 # 
 # 
 
-# In[270]:
+# In[46]:
 
 
+import pandas as pd
 import numpy as np
-led_matrix = pd.DataFrame(np.full((64,32), "000000"))
+
+# import mapping
+statuscode_led_mapping = pd.read_csv('./statuscode_led_mapping.csv', sep=';')
+
+# create led_matrix dataframe with all led colors set to black
+led_matrix = pd.DataFrame(np.full((32,64), "000000"))
+
+
+
+# iterate over status_df rows and display them
+for _, status_row in status_df.iterrows():
+    statuscode = status_row['statuscode']
+    route_color_hex = status_row['route_color_hex']
+
+    # get corresponding led coordinates from mapping
+    # if a statuscode occurs on more than one route, more than 1 mapping row will be found, but as a statuscode is always displayed on the same leds
+    # all rows will contain the same led coordinates
+    applicable_mapping_rows = statuscode_led_mapping[statuscode_led_mapping['statuscode'] == statuscode]
+    if len(applicable_mapping_rows) == 0:
+        # statuscode not in mapping yet
+        print(f"skipping statuscode{statuscode}") 
+        continue
+    
+    statuscode_led_mapping_row = applicable_mapping_rows.loc[applicable_mapping_rows.index[0]]
+
+    led_mapping_string = statuscode_led_mapping_row['leds']
+    leds_xy = led_mapping_string.split("&")
+    for led_xy in leds_xy:
+        x, y = led_xy.split("-")
+        print(f"lighting led at x={x} and y={y}")
+        # .at works with [row (y), col(x)]
+        led_matrix.at[int(y),int(x)] = route_color_hex
+
 # header None so that column index and row index type are int on import and we can use [int][int] to locate datapoints
 led_matrix.to_csv('./led-matrix.csv', header=None, index=False)
 
 led_matrix_read = pd.read_csv('./led-matrix.csv',header=None, dtype=str, index_col=None)
 print(led_matrix_read[0][0] == "000000")
 led_matrix_read.at[0,0] = "BCD300"
-print(led_matrix_read[0][0])
 
 
 
