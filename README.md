@@ -16,8 +16,10 @@ Steps:
 # Installation
 
 virtuelles environment myenv in rnv-train-monitor anlegen
-Dann in rpi-rgb-led-matrix:
-
+Dann 
+1. neuer Ordner rpi-rgb-led-matrix
+2. Inhalt von https://github.com/hzeller/rpi-rgb-led-matrix/tree/master reinkopieren
+3. Im Ordner rpi-rgb-led-matrix:
 ```sh
 sudo apt-get update && sudo apt-get install python3-dev cython3 -y
 make build-python 
