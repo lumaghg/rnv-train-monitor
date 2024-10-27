@@ -25,7 +25,7 @@ class DisplayCSV(MatrixBase):
                     offset_canvas.SetPixel(x, y, color_rgb[0], color_rgb[1], color_rgb[2])      
             offset_canvas = self.matrix.SwapOnVSync(offset_canvas)
 
-            time.sleep(10)
+            time.sleep(2)
            
 
 # Main function
