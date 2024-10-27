@@ -2,3 +2,4 @@ api_secrets.*
 .env
 myenv
 rpi-rgp-led-matrix
+.ipynb_checkpoints
