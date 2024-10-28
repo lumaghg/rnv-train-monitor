@@ -1,11 +1,184 @@
 route_id,route_short_name,route_desc,route_color
+5-48-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-101-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-1-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-23-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-82-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-20-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-83-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-27-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-51-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-86-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-3-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-19-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-42-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-2-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-12-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-105-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-46-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-5-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-16-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-91-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-24-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-4-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-61-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-405-E,E,Weinheim - Mannheim - Heidelberg (Rundf),9C9C9C
+5-122-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-62-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-84-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-410-E,E,Weinheim - Mannheim - Heidelberg (Rundf),9C9C9C
+5-412-E,E,Weinheim - Mannheim - Heidelberg (Rundf),9C9C9C
+5-125-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-34-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-404-E,E,Weinheim - Mannheim - Heidelberg (Rundf),9C9C9C
+5-32-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-133-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-18-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-491-E,E,Weinheim - Mannheim - Heidelberg (Rundf),9C9C9C
+5-55-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-401-E,E,Weinheim - Mannheim - Heidelberg (Rundf),9C9C9C
+5-132-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-103-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+21-2-21,21,Bismarckplatz - Hans-Thoma-Platz,E30613
+21-1-21,21,Bismarckplatz - Hans-Thoma-Platz,E30613
+5-136-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-53-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-128-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-33-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-130-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-134-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-126-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-85-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-106-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-21-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-66-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-7-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-75-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-403-E,E,Weinheim - Mannheim - Heidelberg (Rundf),9C9C9C
+23-451-E,E,Handschuhsheim - Leimen,9C9C9C
+23-151-23,23,Handschuhsheim - Leimen,E48F00
+23-2-23,23,Handschuhsheim - Leimen,E48F00
 22-2-22,22,Bismarckplatz - Eppelheim,FDC300
 22-1-22,22,Bismarckplatz - Eppelheim,FDC300
+23-1-23,23,Handschuhsheim - Leimen,E48F00
 22-121-22,22,Bismarckplatz - Eppelheim,FDC300
 22-102-22,22,Bismarckplatz - Eppelheim,FDC300
+23-152-23,23,Handschuhsheim - Leimen,E48F00
+23-452-E,E,Handschuhsheim - Leimen,9C9C9C
 22-122-22,22,Bismarckplatz - Eppelheim,FDC300
+26-1-26,26,Bismarckplatz - Kirchheim,F39B9B
+26-2-26,26,Bismarckplatz - Kirchheim,F39B9B
+26-11-26,26,Bismarckplatz - Kirchheim,F39B9B
+26-12-26,26,Bismarckplatz - Kirchheim,F39B9B
+26-72-26,26,Bismarckplatz - Kirchheim,F39B9B
+5-121-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-127-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-38-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-129-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-36-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-30-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+26-71-26,26,Bismarckplatz - Kirchheim,F39B9B
+26-102-26,26,Bismarckplatz - Kirchheim,F39B9B
+5-93-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-26-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-88-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-87-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-110-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-732-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-763-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-701-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-702-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-767-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-762-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-723-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-752-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-756-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-773-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-772-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-718-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-713-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-751-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-711-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-765-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-712-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-719-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-703-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-720-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-775-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-784-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-788-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-716-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-777-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-754-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-798-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-771-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-774-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-415-E,E,Weinheim - Mannheim - Heidelberg (Rundf),9C9C9C
+5-715-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-714-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-781-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-776-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-495-E,E,Weinheim - Mannheim - Heidelberg (Rundf),9C9C9C
+5-794-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-782-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-791-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-769-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-778-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
 22-852-22,22,Bismarckplatz - Eppelheim,FDC300
 22-851-22,22,Bismarckplatz - Eppelheim,FDC300
 22-853-22,22,Bismarckplatz - Eppelheim,FDC300
 22-854-22,22,Bismarckplatz - Eppelheim,FDC300
 22-856-22,22,Bismarckplatz - Eppelheim,FDC300
+5-81-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-11-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-104-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-45-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-108-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-25-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-49-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-43-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-22-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-41-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-63-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-67-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-124-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-14-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-68-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-8-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-29-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-72-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-102-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-123-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+23-462-E,E,Handschuhsheim - Leimen,9C9C9C
+23-162-23,23,Handschuhsheim - Leimen,E48F00
+23-11-23,23,Handschuhsheim - Leimen,E48F00
+23-12-23,23,Handschuhsheim - Leimen,E48F00
+23-453-E,E,Handschuhsheim - Leimen,9C9C9C
+23-153-23,23,Handschuhsheim - Leimen,E48F00
+23-402-E,E,Handschuhsheim - Leimen,9C9C9C
+23-401-E,E,Handschuhsheim - Leimen,9C9C9C
+26-112-26,26,Bismarckplatz - Kirchheim,F39B9B
+5-708-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-705-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-710-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-717-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-792-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-725-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-779-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-796-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-780-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-418-E,E,Weinheim - Mannheim - Heidelberg (Rundf),9C9C9C
+5-727-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-721-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-745-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-744-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-747-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-742-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-492-E,E,Weinheim - Mannheim - Heidelberg (Rundf),9C9C9C
+5-733-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-735-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-70-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-416-E,E,Weinheim - Mannheim - Heidelberg (Rundf),9C9C9C
+5-707-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-786-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F
+5-790-5,5,Weinheim - Mannheim - Heidelberg (Rundf),00975F

@@ -67,7 +67,7 @@ def addSecondsToTimeObject(time:datetime.time, seconds) -> datetime.time:
 # In[7]:
 
 
-relevant_lines = ['22']
+relevant_lines = ['22', '26', '5', '23', '21']
 relevant_trip_prefixes = [line + "-" for line in relevant_lines]
 
 
@@ -109,7 +109,7 @@ print(trips.head(5))
 # select relevant columns
 stop_times = stop_times[["trip_id", "arrival_time", "departure_time", "stop_sequence", "stop_id"]]
 
-# select only trips of relevant lines, indicated by the trip_id 
+# select only stop_times of relevant lines, indicated by the trip_id 
 stop_times = stop_times.loc[stop_times['trip_id'].str.startswith(tuple(relevant_trip_prefixes))]
 
 print('found ',stop_times.shape[0], 'stop times on lines', relevant_lines)
@@ -180,7 +180,7 @@ print(trips.head(5))
 
 # ## 4. save filtered data to filesystem
 
-# In[22]:
+# In[ ]:
 
 
 gtfs_filtered_path = path.join(getcwd(), 'gtfs_filtered')
