@@ -180,7 +180,7 @@ print(trips.head(5))
 
 # ## 4. save filtered data to filesystem
 
-# In[ ]:
+# In[22]:
 
 
 gtfs_filtered_path = path.join(getcwd(), 'gtfs_filtered')

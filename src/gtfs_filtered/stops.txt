@@ -116,7 +116,7 @@ stop_id,stop_name,stop_lat,stop_lon,location_type,platform_code
 113301,Burgstraße,49.4343531,8.6822439,0,A
 113302,Burgstraße,49.4349719,8.68202,0,B
 113332,Burgstraße,49.434155,8.6823881,0,D
-113333,Burgstraße,49.4350461,8.6807794,0,V1
+113333,Burgstraße,49.4350431,8.6807081,0,V1
 113412,Jellinekstrasse,49.3615211,8.7052769,0,A
 113521,Kapellenweg,49.4247311,8.6870769,0,A
 113522,Kapellenweg,49.4250519,8.6863669,0,B
@@ -155,7 +155,8 @@ stop_id,stop_name,stop_lat,stop_lon,location_type,platform_code
 114615,Bismarckplatz,49.4101381,8.6929069,0,I
 114616,Bismarckplatz,49.4099919,8.69288,0,H
 114617,Bismarckplatz,49.4097289,8.6928889,0,G
-114645,Bismarckplatz,49.40991,8.6925931,0,
+114642,Bismarckplatz,49.4083439,8.6941019,0,V6
+114645,Bismarckplatz,49.40991,8.6925931,0,V5
 114712,Blockhaus,49.4012711,8.7131639,0,A
 114812,Schönauer Abtweg,49.4206811,8.7597961,0,A
 114911,Rudolf-Diesel-Straße,49.3968339,8.6791539,0,D
@@ -279,7 +280,6 @@ stop_id,stop_name,stop_lat,stop_lon,location_type,platform_code
 121311,Mathilde-Vogt-Haus,49.3811161,8.660685,0,B
 121312,Mathilde-Vogt-Haus,49.38114,8.6604061,0,A
 121401,HD Hauptbahnhof West,49.4053689,8.672785,0,F
-121402,HD Hauptbahnhof West,49.4053511,8.6731981,0,G
 121511,Obere Seegasse,49.3773261,8.6688769,0,B
 121512,Obere Seegasse,49.3772269,8.6691919,0,A
 121601,Odenwaldstraße,49.3791511,8.66956,0,B
@@ -460,6 +460,8 @@ stop_id,stop_name,stop_lat,stop_lon,location_type,platform_code
 130912,Fürstendamm,49.4286281,8.7495369,0,A
 131011,Grüner Baum,49.4375539,8.7519889,0,B
 131012,Grüner Baum,49.4377531,8.7520611,0,A
+131041,Grüner Baum,49.4369106,8.7516933,0,
+131042,Grüner Baum,49.4384178,8.7521708,0,
 131111,Haarlaß,49.4201489,8.7291269,0,B
 131112,Haarlaß,49.4202081,8.730295,0,A
 131211,Hausackerweg,49.4182331,8.7276089,0,B
@@ -647,6 +649,7 @@ stop_id,stop_name,stop_lat,stop_lon,location_type,platform_code
 206001,BASF,49.4944411,8.4336889,0,A
 206002,BASF,49.4950361,8.4328719,0,B
 206011,BASF,49.4958119,8.4302311,0,D
+206012,BASF,49.4954619,8.4323689,0,C
 206013,BASF,49.49471,8.4306711,0,E
 206014,BASF,49.49478,8.4310211,0,F
 206111,Edigheim Friedhof,49.53016,8.3943069,0,B
@@ -683,9 +686,10 @@ stop_id,stop_name,stop_lat,stop_lon,location_type,platform_code
 208011,LU Hauptbahnhof,49.47872,8.4346331,0,B
 208012,LU Hauptbahnhof,49.4785161,8.4346769,0,A
 208013,LU Hauptbahnhof,49.4794961,8.4352161,0,C
+208031,LU Hauptbahnhof,49.4777389,8.4356661,0,
 208121,LU Hauptfriedhof,49.4839261,8.4240589,0,A
 208122,LU Hauptfriedhof,49.4840781,8.4232869,0,B
-208141,LU Hauptfriedhof,49.4842531,8.4218939,0,
+208141,LU Hauptfriedhof,49.4842531,8.4218939,0,V1
 208142,LU Hauptfriedhof,49.48434,8.4217419,0,V2
 208301,Heinrich-Pesch-Haus,49.4837131,8.4137711,0,A
 208302,Heinrich-Pesch-Haus,49.4835989,8.4131,0,B
@@ -707,6 +711,8 @@ stop_id,stop_name,stop_lat,stop_lon,location_type,platform_code
 209314,Pfalzbau/Wilhelm-Hack-Museum,49.4790531,8.4468411,0,C
 209321,Pfalzbau/Wilhelm-Hack-Museum,49.4802139,8.4459419,0,A
 209322,Pfalzbau/Wilhelm-Hack-Museum,49.4800219,8.4454389,0,B
+209341,Pfalzbau/Wilhelm-Hack-Museum,49.4792631,8.4453219,0,
+209342,Pfalzbau/Wilhelm-Hack-Museum,49.4791461,8.4454031,0,
 209411,Fieskostraße,49.4894819,8.3729269,0,A
 209412,Fieskostraße,49.4895461,8.3730261,0,B
 209511,Raschig,49.4659711,8.439645,0,B
@@ -730,6 +736,7 @@ stop_id,stop_name,stop_lat,stop_lon,location_type,platform_code
 210211,Friesenheim Mitte,49.4982689,8.4192889,0,D
 210212,Friesenheim Mitte,49.498245,8.41902,0,C
 210223,Friesenheim Mitte,49.4975281,8.4201161,0,E
+210241,Friesenheim Mitte,49.4981931,8.4186869,0,V1
 210511,Shellhaus,49.4703789,8.446895,0,B
 210512,Shellhaus,49.4700111,8.4463381,0,A
 210801,Südwest-Stadion,49.4721361,8.4396361,0,A
@@ -741,7 +748,7 @@ stop_id,stop_name,stop_lat,stop_lon,location_type,platform_code
 210911,Valentin-Bauer-Siedlung,49.4789881,8.4271589,0,A
 210912,Valentin-Bauer-Siedlung,49.4788369,8.4253889,0,B
 210913,Valentin-Bauer-Siedlung,49.4790819,8.4276889,0,C
-210941,Valentin-Bauer-Siedlung,49.4780311,8.7483781,0,
+210941,Valentin-Bauer-Siedlung,49.4780311,8.7483781,0,V1
 211012,Valentin-Bauer-Siedlung Süd,49.4765781,8.4237719,0,A
 211014,Valentin-Bauer-Siedlung Süd,49.4765781,8.4237719,0,A
 211101,Wittelsbachplatz,49.4760181,8.4445411,0,A
@@ -1007,8 +1014,8 @@ stop_id,stop_name,stop_lat,stop_lon,location_type,platform_code
 235011,Muskatormühle,49.5316181,8.4495981,0,A
 235111,Weidenwörth,49.5178861,8.46301,0,A
 235112,Weidenwörth,49.5177339,8.4629561,0,B
-235113,Weidenwörth,49.5185211,8.4632981,0,D
-235114,Weidenwörth,49.5187431,8.4619231,0,C
+235113,Weidenwörth,49.5185211,8.4632981,0,C
+235114,Weidenwörth,49.5187431,8.4619231,0,D
 235211,Boveristeg,49.5089211,8.4968861,0,B
 235212,Boveristeg,49.5093581,8.4965439,0,A
 235311,Am Kuhbuckel,49.525945,8.5110161,0,A
@@ -1785,6 +1792,7 @@ stop_id,stop_name,stop_lat,stop_lon,location_type,platform_code
 385103,Viernheim Bahnhof,49.5353381,8.5825039,0,3
 385301,Viernheim Ost,49.53746,8.5894031,0,2
 385302,Viernheim Ost,49.5375181,8.5897719,0,1
+385911,Bismarckstraße,49.4829219,8.4455111,0,A
 386501,Viernheim Tivoli,49.5281081,8.56487,0,2
 386502,Viernheim Tivoli,49.528295,8.5656969,0,1
 388812,Rieslingweg,49.4998561,8.5071981,0,A
@@ -1872,6 +1880,7 @@ stop_id,stop_name,stop_lat,stop_lon,location_type,platform_code
 554302,Theresienkrankenhaus,49.4901989,8.4810839,0,B
 554311,Theresienkrankenhaus,49.49003,8.48068,0,C
 554312,Theresienkrankenhaus,49.4891139,8.4805181,0,D
+554342,Theresienkrankenhaus,49.4891139,8.4805181,0,
 554401,Universitätsklinikum,49.4935719,8.4838781,0,A
 554402,Universitätsklinikum,49.4938811,8.48448,0,C
 554404,Universitätsklinikum,49.493805,8.4845069,0,B
@@ -2040,7 +2049,7 @@ stop_id,stop_name,stop_lat,stop_lon,location_type,platform_code
 682711,Erich-Hübner-Platz,49.4284581,8.6874989,0,B
 682712,Erich-Hübner-Platz,49.4281661,8.68758,0,A
 683811,Mühlaustraße,49.5290989,8.3841919,0,A
-683843,Mühlaustraße,49.5290989,8.3841919,0,
+683843,Mühlaustraße,49.5290989,8.3841919,0,V1
 685512,Innovation Park (hip),49.394185,8.6709339,0,A
 685611,Eastsite,49.4754569,8.505995,0,A
 685612,Eastsite,49.4752939,8.5060219,0,B
