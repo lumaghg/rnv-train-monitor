@@ -11,7 +11,7 @@
 # 7. Get status of the active trips
 # 8. Transform status to LED matrix
 
-# In[2]:
+# In[3]:
 
 
 import pandas as pd
@@ -26,9 +26,9 @@ stop_times_path = path.join(gtfs_filtered_path, 'stop_times.txt')
 
 calendar:pd.DataFrame = pd.read_csv(calendar_path)
 routes:pd.DataFrame = pd.read_csv(routes_path)
-trips_allday:pd.DataFrame = pd.read_csv(trips_path)
+trips:pd.DataFrame = pd.read_csv(trips_path)
 stops:pd.DataFrame = pd.read_csv(stops_path)
-stop_times_allday:pd.DataFrame = pd.read_csv(stop_times_path)
+stop_times:pd.DataFrame = pd.read_csv(stop_times_path)
 
 
 relevant_lines = ['22', '5', '26', '23', '21']
@@ -39,7 +39,7 @@ relevant_trip_prefixes = [line + "-" for line in relevant_lines]
 
 # ## 1. convenience functions for gtfs date formats
 
-# In[4]:
+# In[5]:
 
 
 import datetime
@@ -92,7 +92,7 @@ def getGtfsWeekdayFromDate(date: datetime.date):
 # Now we want to fetch the trip_updates from the realtime api to later enrich our static schedules with real time delay data.
 # To do that, we must first authenticate via oauth2 and then call the tripupdates endpoint.
 
-# In[6]:
+# In[7]:
 
 
 # load env
@@ -103,11 +103,11 @@ import requests
 load_dotenv()
 
 # authenticate with oauth2
-client_id = getenv('gtfs_clientID')
-client_secret = getenv('gtfs_clientSecret')
-resource = getenv('gtfs_resource')
-tenant_id = getenv('gtfs_tenantID')
-hostname = getenv('gtfs_hostname')
+client_id = getenv('gtfs_rt_clientID')
+client_secret = getenv('gtfs_rt_clientSecret')
+resource = getenv('gtfs_rt_resource')
+tenant_id = getenv('gtfs_rt_tenantID')
+hostname = getenv('gtfs_rt_hostname')
 
 
 from oauthlib.oauth2 import WebApplicationClient
@@ -149,7 +149,7 @@ print(trip_updates[0])
 # Firstly, we need to select only trip_updates, trips, stop_times, stops and routes for our relevant lines to reduce unnecessary processing.
 # Furhtermore, we only want trips and stop_times that run + - 1 hour of the current time, assuming that no train has more than 60 minutes of delay, to reduce unnecessary processing.
 
-# In[8]:
+# In[9]:
 
 
 # select only trip_updates of relevant trips, indicated by the refernced trip.tripId
@@ -157,24 +157,26 @@ trip_updates = [trip_update for trip_update in trip_updates if trip_update['trip
 
 # select only routes, trips and stop_times of relevant lines, indicated by the route_id / trip_id
 routes = routes.loc[routes['route_id'].str.startswith(tuple(relevant_trip_prefixes))]
-trips = trips_allday.loc[trips_allday['trip_id'].str.startswith(tuple(relevant_trip_prefixes))]
-stop_times_allday = stop_times_allday.loc[stop_times_allday['trip_id'].str.startswith(tuple(relevant_trip_prefixes))]
+trips = trips.loc[trips['trip_id'].str.startswith(tuple(relevant_trip_prefixes))]
+stop_times = stop_times.loc[stop_times['trip_id'].str.startswith(tuple(relevant_trip_prefixes))]
 
 current_time = datetime.datetime.now().time()
 
-def isInOneHourOfCurrentTime(start_gtfs_timestring, end_gtfs_timestring, current_time):
+# train is potentially running if
+# 1. the scheduled start is before the current time (otherwise trip hasn't started yet)
+# 2. the current time if before the scheduled end + 2 hours (otherwise trip has ended, unless delay is > 2h)
+def isPotentiallyRunningAtCurrentTime(start_gtfs_timestring, end_gtfs_timestring, current_time):
     start = parseTimeAsDatetimeObject(start_gtfs_timestring)
     end = parseTimeAsDatetimeObject(end_gtfs_timestring)
 
-    one_hour_window_start = addSecondsToTimeObject(start, -60 * 60)
-    one_hour_window_end = addSecondsToTimeObject(end, 60 * 60)
+    end_with_delay_buffer = addSecondsToTimeObject(end, 60 * 60 * 2)
 
-    return one_hour_window_start <= current_time <= one_hour_window_end
+    return start <= current_time <= end_with_delay_buffer
     
 
-# select only trips and stop_times that are scheduled + - 1 hour of the current time, assuming that no train has more than 60 minutes of delay
-trips = trips_allday.loc[trips_allday.apply(lambda row: isInOneHourOfCurrentTime(row['start_time'], row['end_time'], current_time), axis=1)]
-stop_times = stop_times_allday.loc[stop_times_allday.apply(lambda row: isInOneHourOfCurrentTime(row['arrival_time'], row['departure_time'], current_time), axis=1)]
+# select only trips that are potentially running right now, ignoring trains with 2h + delay
+trips = trips.loc[trips.apply(lambda row: isPotentiallyRunningAtCurrentTime(row['start_time'], row['end_time'], current_time), axis=1)]
+stop_times = stop_times.loc[stop_times.apply(lambda row: row['trip_id'] in trips.loc[:,'trip_id'].values, axis=1)]
 
 print(trips.head(5))
 print(stop_times.head(5))
@@ -184,7 +186,7 @@ print(stop_times.head(5))
 # To prepare enriching the stop_times with the delays, we simply fill the missing stopTimeUpdates.
 # We will later use stopSequence to identify a stop, because we can simply calculate the stopSequence for the artificially filled stopTimeUpdated, but can't do it as easily with the stopIds.
 
-# In[10]:
+# In[11]:
 
 
 # iterate over the trip_updates
@@ -256,7 +258,7 @@ except IndexError:
 # Now, we can add the real time delay to the scheduled stop_times.
 # We create two new columns, arrival_realtime and departure_realtime, and calculate the realtime arrival and departure times using the trip_updates from the previous step. If no trip_update exists, we will simply copy the scheduled times.
 
-# In[12]:
+# In[13]:
 
 
 def calculateRealtime(stop_time, arrival_or_departure):
@@ -313,7 +315,7 @@ print(stop_times[:5])
 # ## 5. add realtime start and end times to trips
 # To make it easy to identify the active trips, we will now add start and end times to each trip. First, we will create a function to get all the stop_times for a specific `trip_id`. Then we will sort the stop_times and return the first `arrival_time` as trip start and the last `departure_time` as trip end.
 
-# In[14]:
+# In[15]:
 
 
 def getTripStartRealtime(trip_id:str) -> tuple[str, str]:
@@ -341,7 +343,7 @@ def getTripEndRealtime(trip_id:str) -> tuple[str, str]:
 
 # Now let's add the new columns by using the function we just created.
 
-# In[16]:
+# In[17]:
 
 
 trips['start_realtime'] = trips.apply(lambda row: getTripStartRealtime(row['trip_id']), axis=1)
@@ -355,7 +357,7 @@ print(trips.head(5))
 # First, we need to get all the trip_ids for currently active trips. Trips are active, if the current time is between the start and end time of the trip and if one of the services, the trip belongs to, runs on the current day.
 # Let's start by looking at the start and end times of the trips.
 
-# In[19]:
+# In[20]:
 
 
 print(datetime.datetime.now())
@@ -377,13 +379,12 @@ print(trips.head(5))
 # Secondly, we will check whether the services run on the current day by looking up the services from the `service_id` column in the calendar dataframe.
 # As soon as we find a `service_id` that runs on the current day, we can stop the search and return true, otherwise we return false.
 
-# In[21]:
+# In[22]:
 
 
 def isTripRowActiveOnCurrentDay(trip_row):
     current_date = datetime.date.today()
     current_weekday_gtfs = getGtfsWeekdayFromDate(datetime.date.today())
-
     
     calendar:pd.DataFrame = pd.read_csv(calendar_path)
 
@@ -425,7 +426,7 @@ print(trips.head(5))
 
 # First, let's define some functions:
 
-# In[24]:
+# In[25]:
 
 
 import pandas as pd
@@ -468,7 +469,6 @@ def getPreviousStopId(stop_times, current_stop_time):
     previous_stop_sequence = current_stop_sequence - 1
     
     previous_stop_times = stop_times.loc[(stop_times['trip_id'] == trip_id) & (stop_times['stop_sequence'] == previous_stop_sequence)].reset_index(drop=True)
-    
     previous_stop_time = previous_stop_times.iloc[0]
 
     return previous_stop_time['stop_id']
@@ -586,7 +586,7 @@ print(status_df)
 # 
 # 
 
-# In[26]:
+# In[27]:
 
 
 import pandas as pd
