@@ -4,7 +4,7 @@ myenv
 rpi-rgb-led-matrix
 .ipynb_checkpoints
 gtfs_filtered
-/src/led-matrix.csv
+src/led-matrix.csv
+led-matrix.csv
 /src/gtfs_full
 /src/gtfs_filtered
-/src/led-matrix.csv
