@@ -11,7 +11,7 @@
 # 7. Get status of the active trips
 # 8. Transform status to LED matrix
 
-# In[3]:
+# In[2]:
 
 
 import pandas as pd
@@ -35,11 +35,9 @@ relevant_lines = ['22', '5', '26', '23', '21']
 relevant_trip_prefixes = [line + "-" for line in relevant_lines]
 
 
-
-
 # ## 1. convenience functions for gtfs date formats
 
-# In[5]:
+# In[4]:
 
 
 import datetime
@@ -84,7 +82,6 @@ def getGtfsWeekdayFromDate(date: datetime.date):
         return "saturday"
     else:
         return "sunday"
-    
 
 
 # ## 2. Fetch trip_updates
@@ -92,7 +89,7 @@ def getGtfsWeekdayFromDate(date: datetime.date):
 # Now we want to fetch the trip_updates from the realtime api to later enrich our static schedules with real time delay data.
 # To do that, we must first authenticate via oauth2 and then call the tripupdates endpoint.
 
-# In[7]:
+# In[6]:
 
 
 # load env
@@ -149,7 +146,7 @@ print(trip_updates[0])
 # Firstly, we need to select only trip_updates, trips, stop_times, stops and routes for our relevant lines to reduce unnecessary processing.
 # Furhtermore, we only want trips and stop_times that run + - 1 hour of the current time, assuming that no train has more than 60 minutes of delay, to reduce unnecessary processing.
 
-# In[9]:
+# In[8]:
 
 
 # select only trip_updates of relevant trips, indicated by the refernced trip.tripId
@@ -161,6 +158,7 @@ trips = trips.loc[trips['trip_id'].str.startswith(tuple(relevant_trip_prefixes))
 stop_times = stop_times.loc[stop_times['trip_id'].str.startswith(tuple(relevant_trip_prefixes))]
 
 current_time = datetime.datetime.now().time()
+current_time = datetime.time(19,34,00)
 
 # train is potentially running if
 # 1. the scheduled start is before the current time (otherwise trip hasn't started yet)
@@ -186,13 +184,21 @@ print(stop_times.head(5))
 # To prepare enriching the stop_times with the delays, we simply fill the missing stopTimeUpdates.
 # We will later use stopSequence to identify a stop, because we can simply calculate the stopSequence for the artificially filled stopTimeUpdated, but can't do it as easily with the stopIds.
 
-# In[11]:
+# In[10]:
 
 
 # iterate over the trip_updates
 for trip_update in trip_updates:
     # find the last stopSequence for the trip
     trip_id = trip_update['trip']['tripId']
+    schedule_relationship = trip_update['trip']['scheduleRelationship']
+    
+    # delete trip and stop_times for canceled trips
+    if schedule_relationship == 'CANCELED':
+        # only keep stop times / trips that are not related to the canceled trip
+        stop_times = stop_times[stop_times['trip_id'] != trip_id]
+        trips = trips[trips['trip_id'] != trip_id]
+        continue
 
     stop_times_for_trip = stop_times.loc[stop_times['trip_id'] == trip_id]
 
@@ -258,7 +264,7 @@ except IndexError:
 # Now, we can add the real time delay to the scheduled stop_times.
 # We create two new columns, arrival_realtime and departure_realtime, and calculate the realtime arrival and departure times using the trip_updates from the previous step. If no trip_update exists, we will simply copy the scheduled times.
 
-# In[13]:
+# In[12]:
 
 
 def calculateRealtime(stop_time, arrival_or_departure):
@@ -315,7 +321,7 @@ print(stop_times[:5])
 # ## 5. add realtime start and end times to trips
 # To make it easy to identify the active trips, we will now add start and end times to each trip. First, we will create a function to get all the stop_times for a specific `trip_id`. Then we will sort the stop_times and return the first `arrival_time` as trip start and the last `departure_time` as trip end.
 
-# In[15]:
+# In[14]:
 
 
 def getTripStartRealtime(trip_id:str) -> tuple[str, str]:
@@ -343,7 +349,7 @@ def getTripEndRealtime(trip_id:str) -> tuple[str, str]:
 
 # Now let's add the new columns by using the function we just created.
 
-# In[17]:
+# In[16]:
 
 
 trips['start_realtime'] = trips.apply(lambda row: getTripStartRealtime(row['trip_id']), axis=1)
@@ -357,7 +363,7 @@ print(trips.head(5))
 # First, we need to get all the trip_ids for currently active trips. Trips are active, if the current time is between the start and end time of the trip and if one of the services, the trip belongs to, runs on the current day.
 # Let's start by looking at the start and end times of the trips.
 
-# In[20]:
+# In[19]:
 
 
 print(datetime.datetime.now())
@@ -379,7 +385,7 @@ print(trips.head(5))
 # Secondly, we will check whether the services run on the current day by looking up the services from the `service_id` column in the calendar dataframe.
 # As soon as we find a `service_id` that runs on the current day, we can stop the search and return true, otherwise we return false.
 
-# In[22]:
+# In[21]:
 
 
 def isTripRowActiveOnCurrentDay(trip_row):
@@ -426,7 +432,7 @@ print(trips.head(5))
 
 # First, let's define some functions:
 
-# In[25]:
+# In[24]:
 
 
 import pandas as pd
@@ -586,7 +592,7 @@ print(status_df)
 # 
 # 
 
-# In[27]:
+# In[26]:
 
 
 import pandas as pd

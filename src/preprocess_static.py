@@ -12,7 +12,7 @@
 
 # ## 1. convenience functions for gtfs date formats
 
-# In[7]:
+# In[4]:
 
 
 import datetime
@@ -46,7 +46,7 @@ def addSecondsToTimeObject(time:datetime.time, seconds) -> datetime.time:
 # 
 # convenience function for downloading and extracting zip:
 
-# In[9]:
+# In[6]:
 
 
 # convenience function for downloading and extracting zip
@@ -64,7 +64,7 @@ def download_and_extract_zip(url, extract_to='.'):
 
 # fetch and extract the gtfs zip:
 
-# In[11]:
+# In[8]:
 
 
 from pandas import read_csv, DataFrame
@@ -100,7 +100,7 @@ download_and_extract_zip(gtfs_second_latest_url, './gtfs_full')
 # 
 # Before we start, lets load the data from the filesystem.
 
-# In[13]:
+# In[10]:
 
 
 gtfs_path = path.join(getcwd(), 'gtfs_full')
@@ -122,7 +122,7 @@ print('read gtfs static data from files')
 # First, we want to remove all unneccessary data entries.
 # As we will focus on the line 22 for the start, we only want routes, trips and stop_times for the line 22. 
 
-# In[15]:
+# In[12]:
 
 
 relevant_lines = ['22', '26', '5', '23', '21']
@@ -131,7 +131,7 @@ relevant_trip_prefixes = [line + "-" for line in relevant_lines]
 
 # To achieve this, we firstly  select all rows from the routes that have a ´route_id´ starting with 22, indicating the route to be on line 22. By doing this instead of looking at the ´route_short_name´, special services like line E for shortened services to and from the depot are included.
 
-# In[17]:
+# In[14]:
 
 
 # select relevant columns
@@ -146,7 +146,7 @@ print(routes.head(5))
 
 # Let's do the same with trips.
 
-# In[19]:
+# In[16]:
 
 
 # select relevant columns
@@ -161,7 +161,7 @@ print(trips.head(5))
 
 # And finally, we also filter the stop_times by looking at the prefix of the trip_id.
 
-# In[21]:
+# In[18]:
 
 
 # select relevant columns
@@ -177,7 +177,7 @@ print(stop_times.head(5))
 # ## 4. (optional) adjust arrivals and departures for visualization
 # The schedule only uses minutes and not seconds. This results in most stops having a standing time of 0 seconds. At the same time, there are no two stops that are scheduled to arrive in the same minute. Therefore, we can manually add an artificial departure delay of 15 seconds, which we will account for when dealing with real time delays later on.
 
-# In[23]:
+# In[20]:
 
 
 def addArtificialDepartureDelay(row):
@@ -195,7 +195,7 @@ print(stop_times[:5])
 # To make it easy to identify the active trips, we will now add start and end times to each trip.
 # First, we will create a function to get all the stop_times for a specific ´trip_id´. Then we will sort the stop_times and return the first ´arrival_time´ as trip start and the last ´departure_time´ as trip end.
 
-# In[26]:
+# In[23]:
 
 
 def getTripStartTime(trip_id:str) -> tuple[str, str]:
@@ -228,7 +228,7 @@ print('trip_id:', example_trip_id, '\nTrip Start Time: ', example_start, '\nTrip
 
 # Now let's add the new columns by using the function we just created.
 
-# In[28]:
+# In[25]:
 
 
 trips['start_time'] = trips.apply(lambda row: getTripStartTime(row['trip_id']), axis=1)
@@ -239,7 +239,7 @@ print(trips.head(5))
 
 # ## 6. save filtered data to filesystem
 
-# In[31]:
+# In[27]:
 
 
 import os
