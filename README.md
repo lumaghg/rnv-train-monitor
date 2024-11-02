@@ -36,5 +36,5 @@ und
 execute preprocessing script every day at midnight 
 
 execute extract active vehicles script every 10 seconds (see convenience script)
-execute display_csv script after every extract active vehicles run (see convenience script)
+execute display_csv script once on startup (runs in loop)
 
