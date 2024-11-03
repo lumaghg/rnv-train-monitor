@@ -158,7 +158,6 @@ trips = trips.loc[trips['trip_id'].str.startswith(tuple(relevant_trip_prefixes))
 stop_times = stop_times.loc[stop_times['trip_id'].str.startswith(tuple(relevant_trip_prefixes))]
 
 current_time = datetime.datetime.now().time()
-current_time = datetime.time(19,34,00)
 
 # train is potentially running if
 # 1. the scheduled start is before the current time (otherwise trip hasn't started yet)
