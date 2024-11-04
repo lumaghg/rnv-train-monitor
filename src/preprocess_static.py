@@ -40,9 +40,9 @@ def addSecondsToTimeObject(time:datetime.time, seconds) -> datetime.time:
     return (datetime_object + delta).time()
 
 
-# ## 2. fetch second latest gtfs zip
+# # 2. fetch second latest gtfs zip
 # 
-# rnv publishes static gtfs on thursdays, with data valid from the following monday for 2 weeks. Therefore, we will only ever use the second latest gtfs zip, as its data will always be valid on the current day. 
+# rnv publishes static gtfs on thursdays, with data valid from the following monday for 1-2 weeks. Therefore, we will always use the gtfs published in the previous week, to prevent switching to the latest one too early. 
 # 
 # convenience function for downloading and extracting zip:
 
@@ -83,16 +83,28 @@ response = requests.get(gtfs_version_overview_url)
 
 gtfs_versions_dict = json.loads(response.text)
 
-# build urls from versions dict
-#gtfs_latest_url = f"{gtfs_base_url}/{gtfs_versions_dict[0]['dir']}/gtfs.zip"
-gtfs_second_latest_url = f"{gtfs_base_url}/{gtfs_versions_dict[1]['dir']}/gtfs.zip"
+# TODO pick correct gtfs by taking the one from last week
 
-#print(gtfs_latest_url)
-print(gtfs_second_latest_url)
+gtfs_url = ''
+
+# search for gtfs of last week, once found, build gtfs_url
+today = datetime.date.today()
+days_since_last_sunday = today.weekday() + 1
+
+lastWeekEnd = today - datetime.timedelta(days = days_since_last_sunday)
+lastWeekStart = lastWeekEnd - datetime.timedelta(days = 6)
+
+for i, gtfs_version in enumerate(gtfs_versions_dict[:2]):
+    modifiedAt = datetime.datetime.fromtimestamp(gtfs_version['modified'] / 1000, datetime.UTC).date()    
+    
+    if lastWeekStart <= modifiedAt <= lastWeekEnd:
+        gtfs_url = f"{gtfs_base_url}/{gtfs_version['dir']}/gtfs.zip"
+    
+
+print(gtfs_url)
 
 # fetch data
-#download_and_extract_zip(gtfs_latest_url, './gtfs_full_latest')
-download_and_extract_zip(gtfs_second_latest_url, './gtfs_full')
+download_and_extract_zip(gtfs_url, './gtfs_full')
 
 
 
