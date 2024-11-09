@@ -12,12 +12,12 @@
 
 # ## 1. convenience functions for gtfs date formats
 
-# In[4]:
+# In[ ]:
 
 
 import datetime
 
-def parseTimeAsDatetimeObject(timestring:str):
+def parseGtfsTimestringAsTimeObject(timestring:str):
     # mod 24, because gtfs defines days as service days that can be longer than 24 hours, so 24:15 is a valid gtfs time
     hour = int(timestring[0:2]) % 24
     minute = int(timestring[3:5])
@@ -28,7 +28,7 @@ def parseTimeAsDatetimeObject(timestring:str):
     #print(second)
     return datetime.time(hour, minute, second)
 
-def parseDateAsDatetimeObject(datestring:str):
+def parseGtfsDatestringAsDateObject(datestring:str):
     year = int(datestring[0:4])
     month = int(datestring[4:6])
     day = int(datestring[6:8])
@@ -189,11 +189,11 @@ print(stop_times.head(5))
 # ## 4. (optional) adjust arrivals and departures for visualization
 # The schedule only uses minutes and not seconds. This results in most stops having a standing time of 0 seconds. At the same time, there are no two stops that are scheduled to arrive in the same minute. Therefore, we can manually add an artificial departure delay of 15 seconds, which we will account for when dealing with real time delays later on.
 
-# In[20]:
+# In[ ]:
 
 
 def addArtificialDepartureDelay(row):
-    departure_time_object = parseTimeAsDatetimeObject(row['departure_time'])
+    departure_time_object = parseGtfsTimestringAsTimeObject(row['departure_time'])
     adjusted_departure_time_object = addSecondsToTimeObject(departure_time_object, 15)
     row['departure_time'] = adjusted_departure_time_object.isoformat()
     return row
