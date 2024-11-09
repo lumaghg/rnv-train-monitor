@@ -39,7 +39,7 @@ class DisplayCSV(MatrixBase):
             #time.sleep(0.3 - 0.3 * (i / number_of_statuscode_rows))
             time.sleep(0.0025 + (1 / (i+1)**2))
 
-        time.sleep(1)
+        time.sleep(5)
 
 
         # loop
