@@ -31,7 +31,7 @@ stops:pd.DataFrame = pd.read_csv(stops_path)
 stop_times:pd.DataFrame = pd.read_csv(stop_times_path)
 
 
-relevant_lines = ['22', '5', '26', '23', '21']
+relevant_lines = ['22', '26', '5', '23', '21', '24', '25']
 #relevant_lines = ['23']
 relevant_trip_prefixes = [line + "-" for line in relevant_lines]
 

@@ -137,7 +137,7 @@ print('read gtfs static data from files')
 # In[12]:
 
 
-relevant_lines = ['22', '26', '5', '23', '21']
+relevant_lines = ['22', '26', '5', '23', '21', '24', '25']
 relevant_trip_prefixes = [line + "-" for line in relevant_lines]
 
 
