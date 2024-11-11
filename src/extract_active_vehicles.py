@@ -632,8 +632,18 @@ statuscode_led_mapping = pd.read_csv('./statuscode_led_mapping.csv', sep=';')
 led_matrix = pd.DataFrame(np.full((32,64), "000000"))
 
 
+# add dimmed gray backlight to show route paths
+statuscode_led_mapping = pd.read_csv('statuscode_led_mapping.csv', sep=";")
 
-# iterate over status_df rows and display them
+for i, statuscode_led_mapping_row in statuscode_led_mapping.iterrows():
+    led_mapping_string = statuscode_led_mapping_row['leds']
+    leds_xy = led_mapping_string.split("&")
+    for led_xy in leds_xy:
+        x, y = led_xy.split("-")
+    
+        led_matrix.at[int(y), int(x)] = "666666"
+
+# iterate over status_df rows and display them (overwrites the route background)
 for _, status_row in status_df.iterrows():
     statuscode = status_row['statuscode']
     route_color_hex = status_row['route_color_hex']
