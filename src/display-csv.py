@@ -37,9 +37,9 @@ class DisplayCSV(MatrixBase):
 
             offset_canvas = self.matrix.SwapOnVSync(offset_canvas)
             #time.sleep(0.3 - 0.3 * (i / number_of_statuscode_rows))
-            time.sleep(0.0025 + (1 / (i+1)**2))
+            time.sleep((1 / (i+1)**2))
 
-        time.sleep(10)
+        time.sleep(3)
 
 
         # loop
