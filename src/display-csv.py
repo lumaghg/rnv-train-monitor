@@ -49,13 +49,23 @@ class DisplayCSV(MatrixBase):
         # light every statuscode with delay to create cool animation
         for i, statuscode_led_mapping_row in statuscode_led_mapping.iterrows():
             # add current row to the led matrix df
-        
+
+            is_lighted = False
+
             led_mapping_string = statuscode_led_mapping_row['leds']
             leds_xy = led_mapping_string.split("&")
             for led_xy in leds_xy:
                 x, y = led_xy.split("-")
-            
+
+                # skip if led is already lighted
+                if led_matrix.at[int(y), int(x)] == "FFFFFF":
+                    is_lighted = True
+                    continue
+
                 led_matrix.at[int(y), int(x)] = "FFFFFF"
+
+            if is_lighted == True:
+                continue
 
             # display new led matrix df
             no_rows, no_columns = led_matrix.shape
