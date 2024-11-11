@@ -641,7 +641,7 @@ for i, statuscode_led_mapping_row in statuscode_led_mapping.iterrows():
     for led_xy in leds_xy:
         x, y = led_xy.split("-")
     
-        led_matrix.at[int(y), int(x)] = "444444"
+        led_matrix.at[int(y), int(x)] = "222222"
 
 # iterate over status_df rows and display them (overwrites the route background)
 for _, status_row in status_df.iterrows():
