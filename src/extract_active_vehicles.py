@@ -11,7 +11,7 @@
 # 7. Get status of the active trips
 # 8. Transform status to LED matrix
 
-# In[25]:
+# In[ ]:
 
 
 import pandas as pd
@@ -31,8 +31,7 @@ stops:pd.DataFrame = pd.read_csv(stops_path)
 stop_times:pd.DataFrame = pd.read_csv(stop_times_path)
 
 
-relevant_lines = ['22', '26', '5', '23', '21', '24', '25']
-#relevant_lines = ['23']
+relevant_lines = ['22', '26', '5', '23', '21', '24']
 relevant_trip_prefixes = [line + "-" for line in relevant_lines]
 
 
@@ -641,12 +640,19 @@ led_matrix = pd.DataFrame(np.full((32,64), "000000"))
 statuscode_led_mapping = pd.read_csv('statuscode_led_mapping.csv', sep=";")
 
 for i, statuscode_led_mapping_row in statuscode_led_mapping.iterrows():
+    # light stations brighter than transit segments
+    color = ""
+    statuscode_segments = statuscode_led_mapping_row['statuscode'].split("_")
+    if len(statuscode_segments) == 3:
+        color = "111111"
+    else:
+        color = "000000"
+
     led_mapping_string = statuscode_led_mapping_row['leds']
     leds_xy = led_mapping_string.split("&")
     for led_xy in leds_xy:
         x, y = led_xy.split("-")
-
-        led_matrix.at[int(y), int(x)] = "111111"
+        led_matrix.at[int(y), int(x)] = color
 
 # iterate over status_df rows and display them (overwrites the route background)
 
