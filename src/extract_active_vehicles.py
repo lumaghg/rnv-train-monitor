@@ -11,7 +11,7 @@
 # 7. Get status of the active trips
 # 8. Transform status to LED matrix
 
-# In[99]:
+# In[25]:
 
 
 import pandas as pd
@@ -38,7 +38,7 @@ relevant_trip_prefixes = [line + "-" for line in relevant_lines]
 
 # ## 1. convenience functions for gtfs date formats
 
-# In[100]:
+# In[26]:
 
 
 import datetime
@@ -90,7 +90,7 @@ def getGtfsWeekdayFromDate(date: datetime.date):
 # Now we want to fetch the trip_updates from the realtime api to later enrich our static schedules with real time delay data.
 # To do that, we must first authenticate via oauth2 and then call the tripupdates endpoint.
 
-# In[101]:
+# In[27]:
 
 
 # load env
@@ -107,6 +107,7 @@ resource = getenv('gtfs_rt_resource')
 tenant_id = getenv('gtfs_rt_tenantID')
 hostname = getenv('gtfs_rt_hostname')
 
+using_realtime = True
 
 from oauthlib.oauth2 import WebApplicationClient
 client = WebApplicationClient(client_id)
@@ -120,6 +121,8 @@ headers= { 'Content-type':'application/x-www-form-urlencoded'}
 auth_response = requests.post(auth_url, data=data, headers=headers)
 auth = client.parse_request_body_response(auth_response.text)
 
+
+
 gtfs_access_token = auth['access_token']
 
 # fetch tripupdates
@@ -128,13 +131,16 @@ import json
 trip_updates_json_url = f'{hostname}/tripupdates/decoded'
 headers = {'Authorization':f'Bearer {gtfs_access_token}'}
 
-trip_updates_response = requests.get(trip_updates_json_url, headers=headers)
-trip_updates = json.loads(trip_updates_response.text)['entity']
+print(trip_updates_json_url)
+trip_updates = []
+try:
+    trip_updates_response = requests.get(trip_updates_json_url, headers=headers)
+    trip_updates = json.loads(trip_updates_response.text)['entity']
+except:
+    using_realtime = False
 
 trip_updates = [trip_update['tripUpdate'] for trip_update in trip_updates]
 
-print(trip_updates[0])
-#print(trip_updates['entity'][0]['tripUpdate']['stopTimeUpdate'])
 
 
 
@@ -147,7 +153,7 @@ print(trip_updates[0])
 # Firstly, we need to select only trip_updates, trips, stop_times, stops and routes for our relevant lines to reduce unnecessary processing.
 # Furhtermore, we only want trips and stop_times that run + - 1 hour of the current time, assuming that no train has more than 60 minutes of delay, to reduce unnecessary processing.
 
-# In[102]:
+# In[28]:
 
 
 # select only trip_updates of relevant trips, indicated by the refernced trip.tripId
@@ -175,7 +181,7 @@ def isPotentiallyRunningAtCurrentTime(start_gtfs_timestring, end_gtfs_timestring
     enddatetime_with_delay_buffer = enddatetime + datetime.timedelta(hours=2)
 
     return startdatetime <= current_datetime <= enddatetime_with_delay_buffer
-    
+
 
 # select only trips that are potentially running right now, ignoring trains with 2h + delay
 trips = trips.loc[trips.apply(lambda row: isPotentiallyRunningAtCurrentTime(row['start_time'], row['end_time'], current_datetime), axis=1)]
@@ -189,7 +195,7 @@ print(stop_times.head(5))
 # To prepare enriching the stop_times with the delays, we simply fill the missing stopTimeUpdates.
 # We will later use stopSequence to identify a stop, because we can simply calculate the stopSequence for the artificially filled stopTimeUpdated, but can't do it as easily with the stopIds.
 
-# In[103]:
+# In[29]:
 
 
 # iterate over the trip_updates
@@ -197,7 +203,7 @@ for trip_update in trip_updates:
     # find the last stopSequence for the trip
     trip_id = trip_update['trip']['tripId']
     schedule_relationship = trip_update['trip']['scheduleRelationship']
-    
+
     # delete trip and stop_times for canceled trips
     if schedule_relationship == 'CANCELED':
         # only keep stop times / trips that are not related to the canceled trip
@@ -211,7 +217,7 @@ for trip_update in trip_updates:
     # skip updates for unknown trips, e.g. emergency services not known to GTFS schedule
     if len(stop_times_for_trip) == 0:
         continue
-        
+
     #print(stop_times_for_trip)
     stop_times_for_trip = stop_times_for_trip.sort_values(by=['stop_sequence'])
     last_stop_sequence = int(stop_times_for_trip.iloc[-1]['stop_sequence']) 
@@ -222,7 +228,7 @@ for trip_update in trip_updates:
     # fill stop_time_updates for every stopSequence
     current_trip_delay_seconds = 0
     for stop_sequence in range(1,last_stop_sequence + 1):
-        
+
         # check if stopTimeUpdate exists
         existing_stop_time_updates = [stop_time_update for stop_time_update in stop_time_updates if stop_time_update['stopSequence'] == stop_sequence]
         # no stopTimeUpdate exists, generate a new one with current_trip_delay
@@ -231,21 +237,21 @@ for trip_update in trip_updates:
                                              'arrival': {'delay': current_trip_delay_seconds}, 
                                              'departure': {'delay': current_trip_delay_seconds}})
         # otherwise use the delays that already exist, update current_trip delay and fill arrival and departure with current_trip_delay if missing
-        
+
         else:
             # determine arrival_delay
             existing_stop_time_update = existing_stop_time_updates[0]
 
-               
+
             arrival_delay = existing_stop_time_update['arrival']['delay'] if 'arrival' in existing_stop_time_update else current_trip_delay_seconds
-            
+
             # update current trip delay, if no arrival delay was specified, it virtually stays the same
             current_trip_delay_seconds = arrival_delay
 
             # determine departure_delay
             existing_stop_time_update = existing_stop_time_updates[0]
             departure_delay = existing_stop_time_update['departure']['delay'] if 'departure' in existing_stop_time_update else current_trip_delay_seconds
-            
+
             # update current trip delay, if no arrival delay was specified, it virtually stays the same
             current_trip_delay_seconds = departure_delay
 
@@ -260,7 +266,7 @@ try:
     print(trip_updates[0])
 except IndexError:
     print('no trip updates found')
-    
+
 
 
 # ## 4. enrich stop_times with realtime delays
@@ -270,24 +276,24 @@ except IndexError:
 # Now, we can add the real time delay to the scheduled stop_times.
 # We create two new columns, arrival_realtime and departure_realtime, and calculate the realtime arrival and departure times using the trip_updates from the previous step. If no trip_update exists, we will simply copy the scheduled times.
 
-# In[104]:
+# In[30]:
 
 
 def calculateRealtime(stop_time, arrival_or_departure):
-    
+
     trip_id = stop_time['trip_id']
     scheduled_time = stop_time[f'{arrival_or_departure}_time']
     stop_sequence = stop_time['stop_sequence']
-    
+
     # find the corresponding trip_update, if it exists
     trip_updates_for_stop_time = [trip_update for trip_update in trip_updates if trip_update['trip']['tripId'] == trip_id]
-    
+
     # if no trip updates exist, the scheduled time is used instead
     if len(trip_updates_for_stop_time) == 0:
        return scheduled_time
-   
+
     trip_update_for_stop_time = trip_updates_for_stop_time[0]
-    
+
     # find the stopTimeUpdate for this stop
     stop_time_updates_for_stop_time = [stop_time_update for stop_time_update in trip_update_for_stop_time['stopTimeUpdate']]
 
@@ -297,7 +303,7 @@ def calculateRealtime(stop_time, arrival_or_departure):
 
     stop_time_update_for_stop_time = stop_time_updates_for_stop_time[0]
 
-    
+
     # add delay to scheduled time
     scheduled_time_object = parseGtfsTimestringAsTimeObject(scheduled_time)
     delay = stop_time_update_for_stop_time[arrival_or_departure]['delay']
@@ -305,11 +311,11 @@ def calculateRealtime(stop_time, arrival_or_departure):
     # => departure delays up to 15 seconds are already accounted for
     if arrival_or_departure == 'departure':
         delay = max(delay - 15,0)
-        
+
     realtime = addSecondsToTimeObject(scheduled_time_object, delay).isoformat()
 
     return realtime
-                                       
+
 
 
 arrivals_realtime = [calculateRealtime(stop_time, 'arrival') for i, stop_time in stop_times.iterrows()]
@@ -327,15 +333,15 @@ print(stop_times[:5])
 # ## 5. add realtime start and end times to trips
 # To make it easy to identify the active trips, we will now add start and end times to each trip. First, we will create a function to get all the stop_times for a specific `trip_id`. Then we will sort the stop_times and return the first `arrival_time` as trip start and the last `departure_time` as trip end.
 
-# In[105]:
+# In[31]:
 
 
 def getTripStartRealtime(trip_id:str) -> tuple[str, str]:
     relevant_stop_times = stop_times.loc[stop_times['trip_id'] == trip_id]
     #print('found ',relevant_stop_times.shape[0], 'relevant stop times for trip_id', trip_id)
-    
+
     relevant_stop_times = relevant_stop_times.sort_values(by=['stop_sequence'])
-    
+
     first_stop = relevant_stop_times.iloc[0]
     trip_start_time = first_stop.loc['arrival_realtime']
 
@@ -344,18 +350,18 @@ def getTripStartRealtime(trip_id:str) -> tuple[str, str]:
 def getTripEndRealtime(trip_id:str) -> tuple[str, str]:
     relevant_stop_times = stop_times.loc[stop_times['trip_id'] == trip_id]
     #print('found ',relevant_stop_times.shape[0], 'relevant stop times for trip_id', trip_id)
-    
+
     relevant_stop_times = relevant_stop_times.sort_values(by=['stop_sequence'])
-    
+
     last_stop = relevant_stop_times.iloc[-1]
     trip_end_time = last_stop.loc['departure_realtime']
-    
+
     return trip_end_time
 
 
 # Now let's add the new columns by using the function we just created.
 
-# In[106]:
+# In[32]:
 
 
 trips['start_realtime'] = trips.apply(lambda row: getTripStartRealtime(row['trip_id']), axis=1)
@@ -369,7 +375,7 @@ print(trips.head(5))
 # First, we need to get all the trip_ids for currently active trips. Trips are active, if the current time is between the start and end time of the trip and if one of the services, the trip belongs to, runs on the current day.
 # Let's start by looking at the start and end times of the trips.
 
-# In[107]:
+# In[33]:
 
 
 print(datetime.datetime.now())
@@ -380,7 +386,7 @@ def isTripRowActiveAtCurrentTime(trip_row):
     end_time = parseGtfsTimestringAsTimeObject(trip_row['end_realtime'])
     #print(start_time, current_time, end_time, start_time <= current_time <= end_time)
     return start_time <= current_time <= end_time
-    
+
 
 # select trips where current time is between start and end time
 trips = trips[trips.apply(isTripRowActiveAtCurrentTime, axis=1)]
@@ -391,13 +397,13 @@ print(trips.head(5))
 # Secondly, we will check whether the services run on the current day by looking up the services from the `service_id` column in the calendar dataframe.
 # As soon as we find a `service_id` that runs on the current day, we can stop the search and return true, otherwise we return false.
 
-# In[108]:
+# In[34]:
 
 
 def isTripRowActiveOnCurrentDay(trip_row):
     current_date = datetime.date.today()
     current_weekday_gtfs = getGtfsWeekdayFromDate(datetime.date.today())
-    
+
     calendar:pd.DataFrame = pd.read_csv(calendar_path)
 
     # select row from calendar for this service
@@ -416,9 +422,9 @@ def isTripRowActiveOnCurrentDay(trip_row):
 
         if duration_check and weekday_check:
             return True
-                
+
     return False
-    
+
 trips = trips[trips.apply(isTripRowActiveOnCurrentDay, axis=1)]
 print(trips.head(5))
 
@@ -435,7 +441,7 @@ print(trips.head(5))
 
 # First, let's define some functions:
 
-# In[109]:
+# In[35]:
 
 
 import pandas as pd
@@ -468,13 +474,13 @@ def isTravelingToStoptime(stop_times, i):
 
 def getPreviousStopId(stop_times, current_stop_time):
     trip_id = current_stop_time['trip_id']
-    
+
     current_stop_sequence = current_stop_time['stop_sequence']
-        
+
     previous_stop_sequence = current_stop_sequence - 1
-    
+
     previous_stop_times = stop_times.loc[(stop_times['trip_id'] == trip_id) & (stop_times['stop_sequence'] == previous_stop_sequence)].reset_index(drop=True)
-    
+
     if len(previous_stop_times) == 0:
          # if previous stop does not exist, train is coming from depot
         return 'DEPOT'
@@ -485,16 +491,16 @@ def getPreviousStopId(stop_times, current_stop_time):
 
 def getNextStopId(stop_times, current_stop_time):
     trip_id = current_stop_time['trip_id']
-    
+
     current_stop_sequence = current_stop_time['stop_sequence']
-        
+
     next_stop_sequence = current_stop_sequence + 1
     next_stop_times = stop_times.loc[(stop_times['trip_id'] == trip_id) & (stop_times['stop_sequence'] == next_stop_sequence)].reset_index(drop=True)
-    
+
     if len(next_stop_times) == 0:
         # if previous stop does not exist, train is coming from depot
         return 'DEPOT'
-    
+
     next_stop_time = next_stop_times.iloc[0]
 
     return next_stop_time['stop_id']
@@ -551,27 +557,27 @@ for i, active_trip in trips.iterrows():
         next_stop_name = getStopName(stops, next_stop_id)
 
         statuscode = f"{previous_stop_id}_{current_stop_id}_{next_stop_id}"
-        
+
     elif len(stop_times_traveling_to) > 0:
         status = 'IN_TRANSIT_TO'
         next_stop_time = stop_times_traveling_to[0]
 
         previous_stop_id = getPreviousStopId(stop_times, next_stop_time)
         next_stop_id = next_stop_time['stop_id']
-        
+
         previous_stop_name = getStopName(stops, previous_stop_id)
         next_stop_name = getStopName(stops, next_stop_id)
-        
+
         statuscode = f"{previous_stop_id}_{next_stop_id}"
     else: 
         status = 'ERROR'
 
-  
-   
-        
+
+
+
     route_id = active_trip['route_id']
     route_color = routes.loc[routes['route_id'] == route_id]['route_color']
-    
+
     status_df_row = pd.DataFrame({'trip_id': trip_id,'status': [status], 
                   'current_stop_id': [current_stop_id], 
                   'previous_stop_id': [previous_stop_id], 
@@ -580,7 +586,7 @@ for i, active_trip in trips.iterrows():
                   'previous_stop_name': [previous_stop_name],
                                  'route_color_hex': route_color, 'statuscode':statuscode})
 
-    
+
     status_df = pd.concat([status_df, status_df_row], ignore_index=True)
 
 print(status_df)
@@ -619,7 +625,7 @@ print(status_df)
 # 
 # 
 
-# In[110]:
+# In[ ]:
 
 
 import pandas as pd
@@ -631,7 +637,6 @@ statuscode_led_mapping = pd.read_csv('./statuscode_led_mapping.csv', sep=';')
 # create led_matrix dataframe with all led colors set to black
 led_matrix = pd.DataFrame(np.full((32,64), "000000"))
 
-
 # add dimmed gray backlight to show route paths
 statuscode_led_mapping = pd.read_csv('statuscode_led_mapping.csv', sep=";")
 
@@ -640,10 +645,11 @@ for i, statuscode_led_mapping_row in statuscode_led_mapping.iterrows():
     leds_xy = led_mapping_string.split("&")
     for led_xy in leds_xy:
         x, y = led_xy.split("-")
-    
-        led_matrix.at[int(y), int(x)] = "222222"
+
+        led_matrix.at[int(y), int(x)] = "111111"
 
 # iterate over status_df rows and display them (overwrites the route background)
+
 for _, status_row in status_df.iterrows():
     statuscode = status_row['statuscode']
     route_color_hex = status_row['route_color_hex']
@@ -656,7 +662,7 @@ for _, status_row in status_df.iterrows():
         # statuscode not in mapping yet
         print(f"skipping statuscode {statuscode}") 
         continue
-    
+
     statuscode_led_mapping_row = applicable_mapping_rows.loc[applicable_mapping_rows.index[0]]
 
     led_mapping_string = statuscode_led_mapping_row['leds']
@@ -666,6 +672,14 @@ for _, status_row in status_df.iterrows():
         print(f"lighting led at x={x} and y={y}")
         # .at works with [row (y), col(x)]
         led_matrix.at[int(y),int(x)] = route_color_hex
+
+# show if realtime data is used
+if using_realtime:
+    led_matrix.at[0,0] = "008000"
+else:
+    led_matrix.at[0,0] = "C1121C"
+
+
 
 # header None so that column index and row index type are int on import and we can use [int][int] to locate datapoints
 led_matrix.to_csv('./led-matrix.csv', header=None, index=False)

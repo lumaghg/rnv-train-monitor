@@ -12,7 +12,7 @@
 
 # ## 1. convenience functions for gtfs date formats
 
-# In[ ]:
+# In[25]:
 
 
 import datetime
@@ -46,7 +46,7 @@ def addSecondsToTimeObject(time:datetime.time, seconds) -> datetime.time:
 # 
 # convenience function for downloading and extracting zip:
 
-# In[6]:
+# In[26]:
 
 
 # convenience function for downloading and extracting zip
@@ -54,7 +54,7 @@ def download_and_extract_zip(url, extract_to='.'):
     # download file
     response = requests.get(url)
     response.raise_for_status()  
-    
+
     # extract in memory
     with zipfile.ZipFile(io.BytesIO(response.content)) as zip_ref:
         # extract to disk
@@ -64,7 +64,7 @@ def download_and_extract_zip(url, extract_to='.'):
 
 # fetch and extract the gtfs zip:
 
-# In[8]:
+# In[27]:
 
 
 from pandas import read_csv, DataFrame
@@ -72,7 +72,7 @@ from os import path, getcwd, getenv
 from dotenv import load_dotenv
 import requests, zipfile, io
 import json
-    
+
 load_dotenv()
 # get array of definitions for the gtfs versions
 
@@ -94,12 +94,20 @@ days_since_last_sunday = today.weekday() + 1
 lastWeekEnd = today - datetime.timedelta(days = days_since_last_sunday)
 lastWeekStart = lastWeekEnd - datetime.timedelta(days = 6)
 
-for i, gtfs_version in enumerate(gtfs_versions_dict[:2]):
-    modifiedAt = datetime.datetime.fromtimestamp(gtfs_version['modified'] / 1000, datetime.UTC).date()    
-    
+# newest versions are at the end
+for i, gtfs_version in enumerate(gtfs_versions_dict[-4:]):
+    modifiedAt = datetime.datetime.fromtimestamp(gtfs_version['modified'] / 1000, datetime.UTC).date()  
+    print(modifiedAt)
+    # error in the api
+    # an old gtfs package was reuploaded  
+    if gtfs_version['modified'] == 1751033303000:
+        continue
     if lastWeekStart <= modifiedAt <= lastWeekEnd:
         gtfs_url = f"{gtfs_base_url}/{gtfs_version['dir']}/gtfs.zip"
-    
+
+
+if gtfs_url == '':
+    raise Exception()
 
 print(gtfs_url)
 
@@ -112,7 +120,7 @@ download_and_extract_zip(gtfs_url, './gtfs_full')
 # 
 # Before we start, lets load the data from the filesystem.
 
-# In[10]:
+# In[28]:
 
 
 gtfs_path = path.join(getcwd(), 'gtfs_full')
@@ -134,16 +142,16 @@ print('read gtfs static data from files')
 # First, we want to remove all unneccessary data entries.
 # As we will focus on the line 22 for the start, we only want routes, trips and stop_times for the line 22. 
 
-# In[12]:
+# In[29]:
 
 
-relevant_lines = ['22', '26', '5', '23', '21', '24', '25']
+relevant_lines = ['22', '26', '5', '23', '21', '24']
 relevant_trip_prefixes = [line + "-" for line in relevant_lines]
 
 
 # To achieve this, we firstly  select all rows from the routes that have a ´route_id´ starting with 22, indicating the route to be on line 22. By doing this instead of looking at the ´route_short_name´, special services like line E for shortened services to and from the depot are included.
 
-# In[14]:
+# In[30]:
 
 
 # select relevant columns
@@ -158,7 +166,7 @@ print(routes.head(5))
 
 # Let's do the same with trips.
 
-# In[16]:
+# In[31]:
 
 
 # select relevant columns
@@ -173,7 +181,7 @@ print(trips.head(5))
 
 # And finally, we also filter the stop_times by looking at the prefix of the trip_id.
 
-# In[18]:
+# In[32]:
 
 
 # select relevant columns
@@ -189,7 +197,7 @@ print(stop_times.head(5))
 # ## 4. (optional) adjust arrivals and departures for visualization
 # The schedule only uses minutes and not seconds. This results in most stops having a standing time of 0 seconds. At the same time, there are no two stops that are scheduled to arrive in the same minute. Therefore, we can manually add an artificial departure delay of 15 seconds, which we will account for when dealing with real time delays later on.
 
-# In[ ]:
+# In[33]:
 
 
 def addArtificialDepartureDelay(row):
@@ -207,29 +215,29 @@ print(stop_times[:5])
 # To make it easy to identify the active trips, we will now add start and end times to each trip.
 # First, we will create a function to get all the stop_times for a specific ´trip_id´. Then we will sort the stop_times and return the first ´arrival_time´ as trip start and the last ´departure_time´ as trip end.
 
-# In[23]:
+# In[34]:
 
 
 def getTripStartTime(trip_id:str) -> tuple[str, str]:
     relevant_stop_times = stop_times.loc[stop_times['trip_id'] == trip_id]
     #print('found ',relevant_stop_times.shape[0], 'relevant stop times for trip_id', trip_id)
-    
+
     relevant_stop_times = relevant_stop_times.sort_values(by=['stop_sequence'])
-    
+
     first_stop = relevant_stop_times.iloc[0]
     trip_start_time = first_stop.loc['arrival_time']
-    
+
     return trip_start_time
 
 def getTripEndTime(trip_id:str) -> tuple[str, str]:
     relevant_stop_times = stop_times.loc[stop_times['trip_id'] == trip_id]
     #print('found ',relevant_stop_times.shape[0], 'relevant stop times for trip_id', trip_id)
-    
+
     relevant_stop_times = relevant_stop_times.sort_values(by=['stop_sequence'])
-    
+
     last_stop = relevant_stop_times.iloc[-1]
     trip_end_time = last_stop.loc['departure_time']
-    
+
     return trip_end_time
 
 example_trip_id = trips.iloc[0].loc['trip_id']
@@ -240,7 +248,7 @@ print('trip_id:', example_trip_id, '\nTrip Start Time: ', example_start, '\nTrip
 
 # Now let's add the new columns by using the function we just created.
 
-# In[25]:
+# In[35]:
 
 
 trips['start_time'] = trips.apply(lambda row: getTripStartTime(row['trip_id']), axis=1)
@@ -251,7 +259,7 @@ print(trips.head(5))
 
 # ## 6. save filtered data to filesystem
 
-# In[27]:
+# In[36]:
 
 
 import os
