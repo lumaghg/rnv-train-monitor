@@ -674,7 +674,7 @@ for i, statuscode_led_mapping_row in statuscode_led_mapping.iterrows():
     if len(statuscode_segments) == 3:
         color = "111111"
     else:
-        color = "000000"
+        color = "111111"
         
     led_mapping_string = statuscode_led_mapping_row['leds']
     leds_xy = led_mapping_string.split("&")
@@ -724,7 +724,7 @@ for _, status_row in status_df.iterrows():
     trail_statuscode = status_row['trail_statuscode']
     
     route_color_hex = status_row['route_color_hex']
-    trail_route_color_hex = dim_hex_color(route_color_hex, 0.3)
+    trail_route_color_hex = dim_hex_color(route_color_hex, 0.5)
     
     print(route_color_hex)
     print(trail_route_color_hex)

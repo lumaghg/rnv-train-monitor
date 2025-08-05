@@ -4,6 +4,7 @@ import time
 from PIL import ImageColor
 import pandas as pd
 import numpy as np
+import os
 
 
 def getHexColorForLine(line):
@@ -111,26 +112,32 @@ class DisplayCSV(MatrixBase):
             offset_canvas = self.matrix.SwapOnVSync(offset_canvas)
 
             # delay between lines
-            time.sleep(3)
+            time.sleep(2)
 
 
         # loop
-
+        last_modified = None
         while True:
             try:
-                led_matrix = pd.read_csv('led-matrix.csv', header=None, dtype=str, index_col=None)
+                current_modified = os.path.getmtime('led-matrix.csv')
+                
+                # detect changes
+                if last_modified != current_modified:
+                    last_modified = current_modified
+                
+                    led_matrix = pd.read_csv('led-matrix.csv', header=None, dtype=str, index_col=None)
 
-                # iterate over every cell
-                no_rows, no_columns = led_matrix.shape
+                    # iterate over every cell
+                    no_rows, no_columns = led_matrix.shape
 
-                for y in range(0,no_rows):
-                    for x in range(0,no_columns):
-                        color_hex = led_matrix.at[y,x]                    
-                        color_rgb = ImageColor.getcolor(f"#{color_hex}", "RGB")
-                        offset_canvas.SetPixel(x, y, color_rgb[0], color_rgb[1], color_rgb[2])      
-                offset_canvas = self.matrix.SwapOnVSync(offset_canvas)
+                    for y in range(0,no_rows):
+                        for x in range(0,no_columns):
+                            color_hex = led_matrix.at[y,x]                    
+                            color_rgb = ImageColor.getcolor(f"#{color_hex}", "RGB")
+                            offset_canvas.SetPixel(x, y, color_rgb[0], color_rgb[1], color_rgb[2])      
+                    offset_canvas = self.matrix.SwapOnVSync(offset_canvas)
 
-                time.sleep(2)
+                time.sleep(5)
             except Exception:
                 continue
            
